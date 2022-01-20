@@ -1,0 +1,1 @@
+local GROUND = GLOBAL.GROUND
