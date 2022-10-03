@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r4.1">
+    <folder id="0" name="swap_lotus_umbrella">
+        <file id="0" name="swap_lotus_umbrella/swap_lotus_umbrella.png" width="552" height="540" pivot_x="0.548913" pivot_y="0.183333"/>
+    </folder>
+    <entity id="0" name="swap_lotus_umbrella">
+        <animation id="0" name="BUILD" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_lotus_umbrella">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="8.641975" y="-92.592593"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
