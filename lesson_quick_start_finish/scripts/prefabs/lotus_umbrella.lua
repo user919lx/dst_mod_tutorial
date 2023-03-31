@@ -13,6 +13,7 @@ local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
     owner.DynamicShadow:SetSize(1.7, 1) -- 设置阴影大小，你可以仔细观察装备荷叶伞时，人物脚下的阴影变化
+    inst.components.fueled:StartConsuming() -- 装备之后开始消耗耐久
 end
 
 -- 卸载回调
@@ -20,6 +21,7 @@ local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry") -- 和上面的装备回调类似，可以试试去掉的结果
     owner.AnimState:Show("ARM_normal")
     owner.DynamicShadow:SetSize(1.3, 0.6)
+    inst.components.fueled:StopConsuming() -- 卸载之后停止消耗耐久
 end
 
 -- 耐久度归零回调
@@ -74,12 +76,12 @@ local function fn()
 
 
     ---------------------- 辅助组件 -------------------------
-    -- 可腐烂的组件，耐久会随时间推移而自然地降低，常用于食物
-    inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_MED) -- 设置耐久度
-    inst.components.perishable:StartPerishing() -- 当物体生成的时候就开始腐烂
-    inst.components.perishable:SetOnPerishFn(onperish) -- 设置耐久度归零的回调函数
-    inst:AddTag("show_spoilage") -- 添加一个标签，与腐败有关的，你可以试试去掉，看看有什么效果
+    inst:AddComponent("fueled") -- 设置可被添加燃料组件，这里实质上就是耐久度。
+    inst.components.fueled.accepting = true
+    inst.components.fueled.maxfuel = TUNING.CAMPFIRE_FUEL_MAX  --设置雨伞的最大耐久度
+    inst.components.fueled.fueltype = FUELTYPE.BURNABLE --设置燃料类型，也就是需要特定的燃料才能增加。BURNABLE是默认的燃料类型，木材，干草都可以提供燃料。
+    inst.components.fueled:SetDepletedFn(onperish) -- 设置燃料用完之后的回调函数，也就是耐久度归零后，这个物体会怎么样处理
+    inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX)  --设置雨伞的初始耐久度
 
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME) -- 系统函数，设置物体可以被点燃
     MakeSmallPropagator(inst) -- 系统函数，设置物体可以传播明火
@@ -87,4 +89,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/lotus_umbrella", fn, assets) -- 这里第一项参数是物体名字，写成路径的形式是为了能够清晰地表达这个物体的分类，common也就是普通物体，inventory表明这是一个可以放在物品栏中使用的物体，最后的lotus_umbrella则是真正的Prefab名。游戏在识别的时候只会识别最后这一段Prefab名，也就是lotus_umbrella。前面的部分只是为了代码可读性，对系统而言并没有什么特别意义
+return Prefab("lotus_umbrella", fn, assets) -- 这里第一项参数是物体名字，写成路径的形式是为了能够清晰地表达这个物体的分类，common也就是普通物体，inventory表明这是一个可以放在物品栏中使用的物体，最后的lotus_umbrella则是真正的Prefab名。游戏在识别的时候只会识别最后这一段Prefab名，也就是lotus_umbrella。前面的部分只是为了代码可读性，对系统而言并没有什么特别意义
